@@ -1,0 +1,366 @@
+/*
+Theme Name: Harbourview Child
+Template: oceanwp
+Description: Cleaned up child theme after the site rescue. Same look, self-hosted fonts, readable colours, no render-blocking extras.
+Version: 2.0
+*/
+
+/* Two families, three files, self-hosted. font-display: swap shows text right away. */
+@font-face {
+  font-family: "Lato";
+  src: url("fonts/lato-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lato";
+  src: url("fonts/lato-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Playfair Display";
+  src: url("fonts/playfair-display-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --hv-cream: #fbf6ee;
+  --hv-ink: #3d3229;     /* 11.6:1 on cream */
+  --hv-heading: #6b4423; /* 8.4:1 on cream */
+  --hv-link: #8a4b14;    /* 6.3:1 on cream */
+  --hv-gold: #c9a96e;    /* decoration only, never text */
+}
+
+body {
+  font-family: "Lato", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--hv-cream);
+  color: var(--hv-ink);
+}
+
+h1, h2, h3, h4, h5, h6, .elementor-heading-title {
+  font-family: "Playfair Display", Georgia, serif !important;
+  font-weight: 700 !important;
+  color: var(--hv-heading) !important;
+}
+
+a { color: var(--hv-link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+/* Links inside text are underlined, not told apart by colour alone. */
+body .elementor .elementor-widget-text-editor a, body .entry-content a, body .textwidget a, body .hv-booking a { text-decoration: underline; }
+a:hover { color: var(--hv-heading); }
+
+#site-logo #site-logo-inner a, .site-title a {
+  font-family: "Playfair Display", Georgia, serif !important;
+  font-weight: 700;
+  font-size: 28px !important;
+  color: var(--hv-heading) !important;
+}
+
+#site-navigation-wrap .dropdown-menu > li > a { color: var(--hv-ink); }
+/* The page you are on: bold, in the heading colour, with a gold underline. */
+/* Custom links (like "Order ahead", a section of the home page) are never "the page you are on". */
+#site-navigation-wrap .dropdown-menu > li.current-menu-item:not(.menu-item-type-custom) > a,
+#site-navigation-wrap .dropdown-menu > li.current-menu-ancestor > a,
+#site-navigation-wrap .dropdown-menu > li.current_page_parent > a {
+  color: var(--hv-heading) !important;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--hv-gold);
+}
+
+/* Announcement is rendered by PHP with the page, so it never shifts content. */
+.hv-announcement {
+  background: var(--hv-heading);
+  color: #fff;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 15px;
+  line-height: 1.4;
+  min-height: 41px;
+}
+.hv-announcement a { color: #fff; text-decoration: underline; }
+
+.elementor-button, .wpcf7-submit {
+  background: var(--hv-heading) !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+}
+.elementor-button:hover, .wpcf7-submit:hover { background: #4f3219 !important; }
+
+/* Visible focus for keyboard users. */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .elementor-button:focus-visible {
+  outline: 3px solid #1d5d8c !important;
+  outline-offset: 2px;
+}
+
+/* Contact form: real labels, readable inputs. */
+.wpcf7 label { display: block; font-weight: 700; color: var(--hv-ink); margin-bottom: 4px; }
+.wpcf7 input, .wpcf7 textarea, .wpcf7 select {
+  border: 1px solid #8c7b6b;
+  background: #fff;
+  color: var(--hv-ink);
+  width: 100%;
+}
+.wpcf7 .hv-hint { font-size: 14px; color: #5e5146; }
+
+/* Hero: reserve the space before the image arrives (no layout shift). */
+.hv-hero img { width: 100%; height: auto; aspect-ratio: 26 / 15; object-fit: cover; display: block; }
+
+/* Text on the photo band needs a solid backing for contrast. */
+.hv-cta .elementor-widget-wrap { background: rgba(61, 50, 41, 0.86); padding: 32px; max-width: 760px; margin: 0 auto; }
+.hv-cta .elementor-heading-title { color: #fff !important; }
+
+/* Placeholder for the online ordering widget (see README). */
+.hv-booking {
+  border: 2px dashed var(--hv-gold);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  background: #fff;
+  margin: 24px 0;
+}
+.hv-booking p { margin: 0 0 12px; }
+
+.hv-hours td { padding: 4px 18px 4px 0; }
+.hv-social a { margin-right: 14px; }
+
+/* Footer: light text on the dark background. */
+#footer-widgets, #footer-widgets p, #footer-widgets .textwidget { color: #e9e1d6; }
+#footer-widgets .widget-title, #footer-widgets h2.widget-title { color: #ffffff !important; font-size: 13px; }
+#footer-widgets a { color: #f3d9a8; }
+#footer-bottom, #footer-bottom a { color: #d9d0c5; }
+#footer #footer-bottom #copyright { line-height: 1.7; } /* beats the theme's inline line-height: 1 */
+#copyright a { text-decoration: underline; }
+
+/* ===========================================================================
+   Design refresh (after/scripts/redesign.php): Home, Menu, Custom Cakes, About.
+   Plain HTML blocks inside Elementor text widgets, styled here. No new fonts,
+   plugins or scripts.
+   =========================================================================== */
+:root {
+  --hv-tint: #f3e8d8;
+  --hv-dark: #2e231b;
+  --hv-line: #e6d8c5;
+  --hv-radius: 14px;
+}
+
+/* Bands: full width colour, content centred at 1140px. */
+.hv-band { padding: clamp(48px, 7vw, 88px) 20px; }
+.hv-band--tint { background: var(--hv-tint); }
+.hv-band--dark { background: var(--hv-dark); }
+.hv-band--intro { padding-top: clamp(40px, 5vw, 64px); }
+/* This Elementor version has no inner widget wrapper, so the text widget itself is the box. */
+.hv-band .elementor-widget-text-editor { width: 100%; max-width: 1140px; margin-left: auto; margin-right: auto; }
+.hv-band p:last-child, .hv-band ul:last-child, .hv-band ol:last-child { margin-bottom: 0; }
+
+.hv-head { max-width: 720px; margin-bottom: 32px; }
+.hv-head h1, .hv-head h2 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.12; margin: 0 0 14px; }
+.hv-head h1 { font-size: clamp(36px, 4.6vw, 58px); }
+.hv-eyebrow {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hv-link);
+}
+.hv-lede { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.65; margin: 0; }
+.hv-small { font-size: 15px; color: #5e5146; }
+.hv-center { text-align: center; margin-top: 32px; }
+.hv-subhead { font-size: 22px; margin: 40px 0 14px; }
+
+/* Buttons */
+.hv-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 0; }
+body .elementor .elementor-widget-text-editor a.hv-btn, .hv-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+/* Variants repeat the base selector so they outrank its transparent border. */
+body .elementor .elementor-widget-text-editor a.hv-btn--primary { background: var(--hv-heading); color: #fff !important; }
+body .elementor .elementor-widget-text-editor a.hv-btn--primary:hover { background: #4f3219; color: #fff !important; }
+body .elementor .elementor-widget-text-editor a.hv-btn--light { background: #fff; color: var(--hv-heading) !important; }
+body .elementor .elementor-widget-text-editor a.hv-btn--light:hover { background: var(--hv-tint); }
+body .elementor .elementor-widget-text-editor a.hv-btn--outline { border-color: var(--hv-heading); color: var(--hv-heading) !important; background: transparent; }
+body .elementor .elementor-widget-text-editor a.hv-btn--outline:hover { background: var(--hv-heading); color: #fff !important; }
+body .elementor .elementor-widget-text-editor a.hv-btn--ghost { border-color: rgba(255, 255, 255, 0.85); color: #fff !important; }
+body .elementor .elementor-widget-text-editor a.hv-btn--ghost:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* Home hero: the photo with the headline laid over it. */
+.hv-hero-wrap .hv-hero-col > .elementor-widget-wrap { position: relative; }
+.hv-hero-wrap .elementor-widget { margin-bottom: 0 !important; }
+.hv-hero-wrap .hv-hero img { aspect-ratio: auto; height: min(82vh, 760px); min-height: 520px; }
+.hv-hero-wrap .hv-hero { position: relative; }
+.hv-hero-wrap .hv-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(30, 21, 14, 0.82) 0%, rgba(30, 21, 14, 0.55) 45%, rgba(30, 21, 14, 0.05) 80%);
+}
+.hv-hero-copy {
+  position: absolute !important;
+  left: 0;
+  right: 0;
+  bottom: clamp(40px, 9vh, 96px);
+  width: 100%;
+}
+.hv-hero-copy { padding-left: max(20px, calc((100% - 1140px) / 2)); padding-right: max(20px, calc((100% - 1140px) / 2)); color: #fff; }
+.hv-hero-copy h1 { color: #fff !important; font-size: clamp(40px, 5.4vw, 72px); line-height: 1.05; margin: 0 0 18px; max-width: 620px; }
+.hv-hero-copy .hv-eyebrow { color: #f3d9a8; }
+.hv-hero-copy .hv-lede { color: #fbf3e6; max-width: 540px; }
+.hv-hero-hours { margin: 18px 0 0; font-size: 15px; color: #efe3d2; }
+@media (max-width: 767px) {
+  .hv-hero-wrap .hv-hero img { height: 46vh; min-height: 300px; }
+  .hv-hero-wrap .hv-hero::after { display: none; }
+  .hv-hero-copy { position: static !important; background: var(--hv-dark); padding-top: 32px; padding-bottom: 40px; }
+}
+
+/* Promise strip under the hero */
+.hv-band--promises { padding-top: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--hv-line); }
+.hv-promises { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.hv-promises li { margin: 0; padding-left: 16px; border-left: 3px solid var(--hv-gold); }
+.hv-promises strong { display: block; font-family: "Playfair Display", Georgia, serif; font-size: 18px; color: var(--hv-heading); }
+.hv-promises span { display: block; margin-top: 4px; font-size: 15px; color: #5e5146; }
+
+/* Grids and cards */
+.hv-grid { display: grid; gap: 24px; }
+.hv-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hv-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hv-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.hv-card { background: #fff; border: 1px solid var(--hv-line); border-radius: var(--hv-radius); overflow: hidden; margin: 0; }
+.hv-card-media { display: block; overflow: hidden; }
+.hv-card-media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: transform 300ms ease; }
+.hv-card:hover .hv-card-media img { transform: scale(1.04); }
+.hv-card-body { padding: 18px 20px 22px; }
+.hv-card h3 { font-size: 20px; margin: 0 0 6px; }
+.hv-card h3 a { color: inherit; text-decoration: none !important; }
+.hv-card h3 a:hover { text-decoration: underline !important; }
+.hv-card p { margin: 0; font-size: 15px; line-height: 1.55; }
+.hv-price { font-weight: 700; font-size: 17px !important; color: var(--hv-link); margin: 0 0 8px !important; }
+.hv-size, .hv-value { padding: 26px 24px; }
+.hv-size .hv-price { margin: 12px 0 0 !important; font-size: 22px !important; }
+
+/* Two-column feature: photo beside copy */
+.hv-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(32px, 5vw, 72px); align-items: center; }
+.hv-split--reverse .hv-split-media { order: 2; }
+.hv-split-media img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; border-radius: var(--hv-radius); display: block; }
+.hv-split .hv-head { margin-bottom: 0; }
+
+/* Price lists with dotted leaders */
+.hv-pricelist, .hv-dishes { list-style: none; margin: 24px 0 0; padding: 0; }
+.hv-pricelist li, .hv-dishes li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px dashed #cdb89c;
+  margin: 0;
+}
+.hv-pricelist strong, .hv-dishes strong { color: var(--hv-link); white-space: nowrap; font-size: 17px; }
+.hv-dishes h3 { font-size: 19px; margin: 0 0 4px; }
+.hv-dishes p { margin: 0; font-size: 15px; color: #5e5146; }
+
+/* Dark bands */
+.hv-band--dark, .hv-band--dark p { color: #efe3d2; }
+.hv-band--dark h2 { color: #fff !important; }
+.hv-band--dark .hv-eyebrow { color: #f3d9a8; }
+.hv-holiday { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; }
+.hv-holiday h2 { font-size: clamp(26px, 3vw, 38px); margin: 0 0 8px; }
+.hv-holiday .hv-actions { margin: 0; }
+.hv-cta-box { text-align: center; max-width: 680px; margin: 0 auto; }
+.hv-cta-box h2 { font-size: clamp(28px, 3.2vw, 40px); margin: 0 0 10px; }
+.hv-cta-box .hv-actions { justify-content: center; }
+
+/* Reviews */
+.hv-quote { padding: 28px 30px; }
+.hv-quote blockquote { margin: 0; border: 0; padding: 0; }
+.hv-quote blockquote p { font-family: "Playfair Display", Georgia, serif; font-size: 21px; line-height: 1.5; color: var(--hv-ink); }
+.hv-quote blockquote p::before { content: "\201C"; display: block; font-size: 56px; line-height: 0.6; color: var(--hv-gold); margin-bottom: 12px; }
+.hv-quote figcaption { margin-top: 18px; font-size: 15px; color: #5e5146; }
+.hv-quote figcaption strong { display: block; color: var(--hv-ink); }
+
+/* Visit */
+.hv-visit { display: grid; grid-template-columns: 3fr 2fr; gap: 32px; align-items: start; }
+.hv-visit-card { background: #fff; border: 1px solid var(--hv-line); border-radius: var(--hv-radius); padding: clamp(24px, 3vw, 40px); }
+.hv-visit-card .hv-head { margin-bottom: 12px; }
+.hv-hours-table { width: 100%; border-collapse: collapse; margin: 20px 0 0; }
+.hv-hours-table th, .hv-hours-table td { text-align: left; padding: 10px 0; border-bottom: 1px solid var(--hv-line); font-weight: 400; }
+.hv-hours-table th { font-weight: 700; color: var(--hv-ink); text-transform: none; letter-spacing: 0; font-size: 16px; }
+.hv-order-ahead { margin: 0; scroll-margin-top: 24px; } /* the menu's "Order ahead" link lands here */
+.hv-order-ahead h2 { font-size: 28px; margin: 0 0 10px; }
+
+/* Menu page */
+.hv-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+body .elementor .elementor-widget-text-editor .hv-chips a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--hv-heading);
+  color: var(--hv-heading);
+  font-weight: 700;
+  text-decoration: none !important;
+}
+.hv-chips a:hover { background: var(--hv-heading); color: #fff; }
+.hv-menu-cat { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(28px, 5vw, 64px); align-items: start; scroll-margin-top: 24px; }
+.hv-menu-media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--hv-radius); display: block; }
+.hv-menu-list h2 { font-size: clamp(28px, 3vw, 38px); margin: 0 0 8px; }
+
+/* Custom cakes */
+.hv-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.hv-tags li { margin: 0; padding: 8px 16px; border-radius: 999px; background: #fff; border: 1px solid var(--hv-line); font-weight: 700; color: var(--hv-ink); }
+.hv-steps { list-style: none; counter-reset: hv-step; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.hv-steps li { counter-increment: hv-step; margin: 0; padding: 28px 24px; background: #fff; border: 1px solid var(--hv-line); border-radius: var(--hv-radius); }
+.hv-steps li::before {
+  content: counter(hv-step);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--hv-heading);
+  color: #fff;
+  font-weight: 700;
+}
+.hv-steps strong { display: block; font-family: "Playfair Display", Georgia, serif; font-size: 20px; color: var(--hv-heading); margin-bottom: 6px; }
+.hv-steps span { font-size: 15px; line-height: 1.55; }
+.hv-note { margin-top: 24px; padding: 16px 20px; border-left: 4px solid var(--hv-gold); background: var(--hv-tint); border-radius: 0 10px 10px 0; }
+.hv-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.hv-gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+.hv-form-wrap { max-width: 760px; margin: 0 auto; padding: clamp(24px, 4vw, 48px); background: #fff; border: 1px solid var(--hv-line); border-radius: var(--hv-radius); scroll-margin-top: 24px; }
+
+/* About */
+.hv-timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.hv-timeline li { margin: 0; padding-top: 18px; border-top: 3px solid var(--hv-gold); }
+.hv-timeline strong { display: block; font-family: "Playfair Display", Georgia, serif; font-size: 32px; color: var(--hv-heading); }
+.hv-timeline span { display: block; margin-top: 6px; font-size: 16px; line-height: 1.55; }
+
+/* Tablets and phones */
+@media (max-width: 1024px) {
+  .hv-grid--4, .hv-promises { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hv-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .hv-grid--2, .hv-grid--3, .hv-grid--4, .hv-split, .hv-visit, .hv-menu-cat, .hv-steps, .hv-timeline { grid-template-columns: 1fr; }
+  .hv-promises { grid-template-columns: 1fr; gap: 16px; }
+  .hv-split--reverse .hv-split-media { order: 0; }
+  .hv-menu-media img { aspect-ratio: 16 / 10; }
+  .hv-btn { width: 100%; justify-content: center; }
+}
+
+/* The cake sits right of centre in its photo: crop it square and shift the crop to it. */
+.hv-split-media img.hv-photo-cakes-layer { aspect-ratio: 1; object-position: 100% 50%; }
+.hv-gallery img.hv-photo-cakes-layer { object-position: 100% 50%; }
+
+/* The theme's back-to-top button sat under the chat bubble; lift it above it. */
+#scroll-top { bottom: 96px !important; right: 26px !important; }

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Site rescue",
+    "settings": [
+      { "type": "header", "content": "Performance" },
+      { "type": "image_picker", "id": "hv_hero_image", "label": "Home hero image (preloaded)", "info": "Pick the same image as the first section on the home page." },
+      { "type": "checkbox", "id": "hv_product_schema", "label": "Output Product structured data", "default": false, "info": "Dawn 15+ already prints Product JSON-LD in main-product. Turn this on only if you remove that one." },
+      { "type": "header", "content": "Support chat" },
+      { "type": "checkbox", "id": "hv_support_bot_enabled", "label": "Show support chat", "default": true },
+      { "type": "text", "id": "hv_support_bot_src", "label": "Widget script URL", "default": "http://localhost:3010/embed/widget.js" },
+      { "type": "text", "id": "hv_support_bot_id", "label": "Bot id", "default": "northwind" },
+      { "type": "text", "id": "hv_support_bot_api", "label": "API URL", "default": "http://localhost:8010" }
+    ]
+  }
+]

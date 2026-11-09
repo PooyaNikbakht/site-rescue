@@ -1,0 +1,30 @@
+{%- comment -%}
+  Theme app extension version of the support chat embed.
+
+  This is the "proper" Shopify way for an app to add a script: the merchant
+  turns it on under Online Store > Themes > Customize > App embeds, and it
+  never edits theme files. It needs a Shopify app (created with the owner's
+  Partner account) to ship it:
+
+    shopify app init            # then copy this folder into
+                                # extensions/support-bot/blocks/
+    shopify app dev
+
+  See ../SHOPIFY-TODO.md. Not needed if the theme snippet is used instead.
+{%- endcomment -%}
+
+{%- if block.settings.script_src != blank -%}
+  <script src="{{ block.settings.script_src }}" data-bot="{{ block.settings.bot_id | escape }}" data-api="{{ block.settings.api_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Support chat",
+  "target": "body",
+  "settings": [
+    { "type": "text", "id": "script_src", "label": "Widget script URL", "default": "https://bot.example.com/embed/widget.js" },
+    { "type": "text", "id": "bot_id", "label": "Bot id", "default": "northwind" },
+    { "type": "text", "id": "api_url", "label": "API URL", "default": "https://api.example.com" }
+  ]
+}
+{% endschema %}

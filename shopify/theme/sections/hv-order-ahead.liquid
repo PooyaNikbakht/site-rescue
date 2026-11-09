@@ -1,0 +1,42 @@
+{%- comment -%}
+  "Order ahead / Book now" slot, ready for an embeddable ordering widget.
+
+  Add it to any template in the theme editor ("Order ahead" section). Until
+  the embed script exists it shows a fallback with a phone link and a
+  button. When an ordering widget is ready, paste its script URL and
+  business id into the section settings: no code change needed.
+{%- endcomment -%}
+
+<section id="book" class="hv-order-ahead page-width" aria-labelledby="hv-order-ahead-{{ section.id }}">
+  <h2 id="hv-order-ahead-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+  {%- if section.settings.embed_src != blank -%}
+    {%- comment -%} The data attributes are placeholders until the ordering widget's embed options are set. {%- endcomment -%}
+    <div data-sbp-booking data-business="{{ section.settings.business_id | escape }}"></div>
+    <script src="{{ section.settings.embed_src }}" defer></script>
+  {%- else -%}
+    <!-- ONLINE ORDERING WIDGET GOES HERE (embed script). -->
+    <p>{{ section.settings.fallback_text | escape }}</p>
+    {%- if section.settings.fallback_url != blank -%}
+      <a class="button" href="{{ section.settings.fallback_url }}">{{ section.settings.fallback_label | escape }}</a>
+    {%- endif -%}
+  {%- endif -%}
+</section>
+
+<style>
+  .hv-order-ahead { border: 2px dashed rgba(var(--color-foreground), 0.35); border-radius: 8px; padding: 2.4rem; margin: 3.2rem auto; text-align: center; }
+</style>
+
+{% schema %}
+{
+  "name": "Order ahead",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Order ahead" },
+    { "type": "text", "id": "embed_src", "label": "Ordering widget script URL", "info": "Leave empty until an ordering widget script is available." },
+    { "type": "text", "id": "business_id", "label": "Business id for the widget" },
+    { "type": "text", "id": "fallback_text", "label": "Fallback text", "default": "Online ordering for pick-up is coming soon." },
+    { "type": "text", "id": "fallback_label", "label": "Fallback button label", "default": "Contact us" },
+    { "type": "url", "id": "fallback_url", "label": "Fallback button link" }
+  ],
+  "presets": [{ "name": "Order ahead" }]
+}
+{% endschema %}

@@ -1,0 +1,29 @@
+{%- comment -%}
+  Preloads the home page hero image so the browser starts downloading it
+  before CSS and app scripts. Render inside <head> in layout/theme.liquid:
+
+    {% render 'hv-hero-preload' %}
+
+  Works with Dawn's "image-banner" and "slideshow" sections. The widths below match Dawn's image-banner
+  section. Keep the widths and sizes in sync with what the section renders, otherwise the browser downloads
+  two different sizes (check the Network panel after adding this).
+{%- endcomment -%}
+
+{%- if request.page_type == 'index' -%}
+  {%- comment -%}
+    Liquid cannot reliably read the first section of the home template, so
+    the hero image is picked once in theme settings (settings.hv_hero_image,
+    see PLAYBOOK.md) and must match the image used in the hero section.
+  {%- endcomment -%}
+  {%- assign hero = settings.hv_hero_image -%}
+  {%- if hero != blank -%}
+    <link
+      rel="preload"
+      as="image"
+      href="{{ hero | image_url: width: 1500 }}"
+      imagesrcset="{{ hero | image_url: width: 375 }} 375w, {{ hero | image_url: width: 550 }} 550w, {{ hero | image_url: width: 750 }} 750w, {{ hero | image_url: width: 1100 }} 1100w, {{ hero | image_url: width: 1500 }} 1500w, {{ hero | image_url: width: 1780 }} 1780w, {{ hero | image_url: width: 2000 }} 2000w, {{ hero | image_url: width: 3000 }} 3000w, {{ hero | image_url: width: 3840 }} 3840w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    >
+  {%- endif -%}
+{%- endif -%}

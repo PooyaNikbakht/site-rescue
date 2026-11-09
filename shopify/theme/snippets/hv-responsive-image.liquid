@@ -1,0 +1,52 @@
+{%- comment -%}
+  Responsive image with correct srcset, sizes, dimensions and loading.
+
+  Fixes the most common Shopify image problems we find:
+  - images requested at full size (e.g. image_url without width, or "master")
+  - missing width/height, which causes layout shift
+  - lazy loading on the first, above-the-fold image (hurts LCP)
+  - eager loading on everything below the fold
+
+  Usage:
+    {% render 'hv-responsive-image',
+      image: section.settings.image,
+      sizes: '(min-width: 990px) 50vw, 100vw',
+      above_fold: true,
+      class: 'banner__media-image' %}
+
+  Parameters:
+    image       (required) image object
+    sizes       (optional) sizes attribute, defaults to 100vw
+    above_fold  (optional) true for the LCP image: eager + fetchpriority=high
+    widths      (optional) comma list of widths, defaults to a sensible set
+    class       (optional) CSS class
+    alt         (optional) overrides image.alt
+{%- endcomment -%}
+
+{%- liquid
+  assign sizes = sizes | default: '100vw'
+  assign widths = widths | default: '360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048'
+  assign alt_text = alt | default: image.alt
+  if above_fold
+    assign loading = 'eager'
+    assign priority = 'high'
+  else
+    assign loading = 'lazy'
+    assign priority = 'auto'
+  endif
+-%}
+
+{%- if image != blank -%}
+  {{
+    image
+    | image_url: width: 2048
+    | image_tag:
+      widths: widths,
+      sizes: sizes,
+      loading: loading,
+      fetchpriority: priority,
+      decoding: 'async',
+      alt: alt_text,
+      class: class
+  }}
+{%- endif -%}

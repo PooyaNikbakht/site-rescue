@@ -1,0 +1,57 @@
+/*
+Theme Name: Harbourview Child
+Template: oceanwp
+Description: Child theme left behind by the previous developer. Recreated on purpose with the problems we usually find. Do not copy this into a real site.
+Version: 1.0
+*/
+
+/* Fonts pulled in a second time from CSS. This @import blocks rendering until it resolves. */
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,500,600,700,800,900|Lato:100,300,400,700,900");
+
+body {
+  font-family: "Lato", "Open Sans", sans-serif;
+  background: #fbf6ee;
+  color: #8a7f74; /* light brown on cream: fails contrast */
+}
+
+h1, h2, h3, h4, h5, h6, .elementor-heading-title {
+  font-family: "Playfair Display", serif !important;
+  color: #c9a96e !important; /* gold headings: fails contrast */
+}
+
+a { color: #d4b483; }
+a:hover { color: #b8955d; }
+
+#site-logo #site-logo-inner a, .site-title a {
+  font-family: "Dancing Script", cursive !important;
+  font-size: 34px !important;
+  color: #c9a96e !important;
+}
+
+/* Announcement bar is added by js/site.js after the page loads. */
+.hv-announcement {
+  background: #c9a96e;
+  color: #fff;
+  text-align: center;
+  padding: 14px 10px;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.elementor-button, .wpcf7-submit {
+  background: #d9c29c !important;
+  color: #ffffff !important; /* white on light gold: fails contrast */
+  border-radius: 0 !important;
+  text-transform: uppercase;
+}
+
+/* "Remove the ugly outline" */
+*:focus { outline: none !important; }
+
+.wpcf7 input, .wpcf7 textarea, .wpcf7 select {
+  border: 1px solid #eee4d6;
+  background: #fff;
+  color: #b0a597;
+}
+
+.hv-hours td { padding: 4px 18px 4px 0; }

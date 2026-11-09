@@ -1,0 +1,135 @@
+# Two WordPress sites built from the same seed.
+#   BEFORE: http://localhost:8881  (the site as the client handed it over)
+#   AFTER:  http://localhost:8882  (the same site after the rescue)
+# Everything is scripted: see the Makefile. No admin clicking needed.
+name: site-rescue
+
+x-wp-env: &wp-env
+  WORDPRESS_DB_USER: wordpress
+  WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-local-only-password}
+  WORDPRESS_DB_NAME: wordpress
+
+x-db-env: &db-env
+  MARIADB_DATABASE: wordpress
+  MARIADB_USER: wordpress
+  MARIADB_PASSWORD: ${DB_PASSWORD:-local-only-password}
+  MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-local-only-root}
+
+x-db: &db
+  image: mariadb:11.4
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+    interval: 3s
+    timeout: 5s
+    retries: 40
+
+services:
+  # ---------- BEFORE ----------
+  db-before:
+    <<: *db
+    container_name: site-rescue-db-before
+    environment: *db-env
+    volumes:
+      - db-before:/var/lib/mysql
+
+  wp-before:
+    image: wordpress:7.1.4-php8.3-apache
+    container_name: site-rescue-wp-before
+    restart: unless-stopped
+    depends_on:
+      db-before:
+        condition: service_healthy
+    ports:
+      - "8881:80"
+    environment:
+      <<: *wp-env
+      WORDPRESS_DB_HOST: db-before
+    volumes:
+      - wp-before:/var/www/html
+
+  cli-before:
+    image: wordpress:cli-2.12.0-php8.3
+    container_name: site-rescue-cli-before
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      db-before:
+        condition: service_healthy
+    environment:
+      <<: *wp-env
+      WORDPRESS_DB_HOST: db-before
+      SITE_URL: http://localhost:8881
+      SITE_VARIANT: before
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:-local-only-admin}
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+      HOME: /tmp
+    volumes:
+      - wp-before:/var/www/html
+      - ./:/work:ro
+      - ./build/photos:/images:ro
+
+  # ---------- AFTER ----------
+  db-after:
+    <<: *db
+    container_name: site-rescue-db-after
+    environment: *db-env
+    volumes:
+      - db-after:/var/lib/mysql
+
+  wp-after:
+    image: wordpress:7.1.4-php8.3-apache
+    container_name: site-rescue-wp-after
+    restart: unless-stopped
+    depends_on:
+      db-after:
+        condition: service_healthy
+    ports:
+      - "8882:80"
+    environment:
+      <<: *wp-env
+      WORDPRESS_DB_HOST: db-after
+      # Outgoing mail goes to the local Mailpit catcher (internal only).
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    volumes:
+      - wp-after:/var/www/html
+
+  cli-after:
+    image: wordpress:cli-2.12.0-php8.3
+    container_name: site-rescue-cli-after
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      db-after:
+        condition: service_healthy
+    environment:
+      <<: *wp-env
+      WORDPRESS_DB_HOST: db-after
+      SITE_URL: http://localhost:8882
+      SITE_VARIANT: after
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:-local-only-admin}
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+      HOME: /tmp
+    volumes:
+      - wp-after:/var/www/html
+      - ./:/work:ro
+      - ./build/photos:/images:ro
+
+  # Catches outgoing mail from the AFTER site. Not published to the host.
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: site-rescue-mailpit
+    restart: unless-stopped
+
+volumes:
+  db-before:
+    name: site-rescue-db-before
+  wp-before:
+    name: site-rescue-wp-before
+  db-after:
+    name: site-rescue-db-after
+  wp-after:
+    name: site-rescue-wp-after

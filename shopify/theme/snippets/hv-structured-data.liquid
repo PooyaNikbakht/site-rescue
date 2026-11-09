@@ -1,0 +1,79 @@
+{%- comment -%}
+  Organization (every page) and Product (product pages) structured data.
+
+  Render once, near the end of <head> in layout/theme.liquid:
+    {% render 'hv-structured-data' %}
+
+  Before adding: search the theme for "application/ld+json" and
+  "structured_data". Recent Dawn versions already print Product data in
+  sections/main-product.liquid with {{ product | structured_data }}. Keep
+  only ONE Product block per page: ours is off by default
+  (settings.hv_product_schema). Turn it on only after removing Dawn's.
+{%- endcomment -%}
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": {{ shop.url | append: '/#organization' | json }},
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }}
+    {%- if settings.logo != blank -%},
+    "logo": {{ settings.logo | image_url: width: 600 | prepend: 'https:' | json }}
+    {%- endif -%}
+    {%- if shop.phone != blank -%},
+    "telephone": {{ shop.phone | json }}
+    {%- endif -%}
+    {%- liquid
+      assign same_as = ''
+      if settings.social_instagram_link != blank
+        assign same_as = same_as | append: settings.social_instagram_link | append: '|'
+      endif
+      if settings.social_facebook_link != blank
+        assign same_as = same_as | append: settings.social_facebook_link | append: '|'
+      endif
+      assign same_as = same_as | split: '|'
+    -%}
+    {%- if same_as.size > 0 -%},
+    "sameAs": {{ same_as | json }}
+    {%- endif %}
+  }
+</script>
+
+{%- if request.page_type == 'product' and settings.hv_product_schema -%}
+  {%- assign v = product.selected_or_first_available_variant -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "description": {{ product.description | strip_html | strip_newlines | truncate: 500 | json }},
+      "url": {{ shop.url | append: product.url | json }},
+      {%- if product.featured_image -%}
+      "image": [{{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }}],
+      {%- endif -%}
+      {%- if v.sku != blank -%}
+      "sku": {{ v.sku | json }},
+      {%- endif -%}
+      {%- if v.barcode != blank -%}
+      "gtin": {{ v.barcode | json }},
+      {%- endif -%}
+      "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+      "offers": [
+        {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          "price": {{ variant.price | divided_by: 100.0 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "url": {{ shop.url | append: variant.url | json }}
+          {%- if variant.sku != blank -%},
+          "sku": {{ variant.sku | json }}
+          {%- endif %}
+        }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "seller": { "@id": {{ shop.url | append: '/#organization' | json }} }
+    }
+  </script>
+{%- endif -%}

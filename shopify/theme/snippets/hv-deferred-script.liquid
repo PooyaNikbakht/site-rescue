@@ -1,0 +1,38 @@
+{%- comment -%}
+  Loads a third-party script only after the page is interactive: on the
+  first user interaction (scroll, tap, key press, mouse move) or after a
+  timeout, whichever comes first.
+
+  Use this for scripts that were pasted into theme.liquid by an app or a
+  previous developer (reviews widgets, chat, pop-ups, tracking pixels that do
+  not need to run before the first paint). It does NOT apply to app embeds
+  managed by Shopify; for those, see PLAYBOOK.md section 4.
+
+    {% render 'hv-deferred-script', src: 'https://example-app.com/widget.js', timeout: 4000 %}
+
+  Parameters:
+    src      (required) script URL
+    timeout  (optional) ms before loading anyway, default 5000
+    attrs    (optional) extra attributes as a JSON object string, e.g. '{"data-shop":"x"}'
+{%- endcomment -%}
+
+{%- assign timeout = timeout | default: 5000 -%}
+<script>
+  (function () {
+    var loaded = false;
+    var events = ['scroll', 'pointerdown', 'keydown', 'mousemove', 'touchstart'];
+    function load() {
+      if (loaded) return;
+      loaded = true;
+      events.forEach(function (e) { window.removeEventListener(e, load, { passive: true }); });
+      var s = document.createElement('script');
+      s.src = {{ src | json }};
+      s.async = true;
+      var attrs = {{ attrs | default: '{}' }};
+      Object.keys(attrs).forEach(function (k) { s.setAttribute(k, attrs[k]); });
+      document.body.appendChild(s);
+    }
+    events.forEach(function (e) { window.addEventListener(e, load, { passive: true, once: true }); });
+    window.addEventListener('load', function () { setTimeout(load, {{ timeout }}); });
+  })();
+</script>

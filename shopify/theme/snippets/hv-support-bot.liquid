@@ -1,0 +1,23 @@
+{%- comment -%}
+  Support chat widget (docs-chat project), added without touching the rest
+  of the theme. Render just before </body> in layout/theme.liquid:
+
+    {% render 'hv-support-bot' %}
+
+  Values come from theme settings (see settings_schema snippet in README),
+  so the store owner can switch it off in the theme editor. The script is
+  loaded with defer and does not block rendering.
+
+  For a public store the widget and API must be on HTTPS URLs (Shopify
+  pages are HTTPS, browsers block http:// scripts there). During
+  `shopify theme dev` on http://127.0.0.1:9292 the localhost URLs work.
+{%- endcomment -%}
+
+{%- liquid
+  assign bot_src = settings.hv_support_bot_src | default: 'http://localhost:3010/embed/widget.js'
+  assign bot_id = settings.hv_support_bot_id | default: 'northwind'
+  assign bot_api = settings.hv_support_bot_api | default: 'http://localhost:8010'
+-%}
+{%- if settings.hv_support_bot_enabled != false and bot_src != blank -%}
+  <script src="{{ bot_src }}" data-bot="{{ bot_id | escape }}" data-api="{{ bot_api }}" defer></script>
+{%- endif -%}
