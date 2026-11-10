@@ -186,8 +186,9 @@ update_post_meta(
 	array(
 		'active'             => true,
 		'subject'            => 'New cake order from [your-name]',
-		// Spoofed From address: the server is not allowed to send as gmail.com.
-		'sender'             => 'Harbourview Bakery <harbourviewbakery.orders@gmail.com>',
+		// Spoofed From address: the server is not allowed to send as gmail.com. Gmail
+		// usernames can't contain underscores, so this address can't belong to anyone.
+		'sender'             => 'Harbourview Bakery <harbourview_bakery_demo@gmail.com>',
 		'recipient'          => 'orders@harbourview-bakery.example',
 		'body'               => "From: [your-name] <[your-email]>\nPhone: [your-phone]\nEvent date: [event-date]\nSize: [cake-size]\n\n[your-message]",
 		'additional_headers' => '',
